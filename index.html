@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PATTI SCRIBE｜無料の動画文字起こしツール（完全ローカル・データが漏れない）</title>
+<meta name="description" content="動画・音声をドラッグ&ドロップするだけでAIが高精度文字起こし。完全無料・完全ローカル動作でデータがネットに出ないから、放送前素材や社外秘の会議もOK。テロップ用SRT・話者分け・EDIUS対応。">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --pink:#D6336C; --sun:#FFC400; --dark:#1a1a24; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Zen Maru Gothic',sans-serif; background:var(--dark); color:#fff; line-height:1.8; }
+  .wrap { max-width:860px; margin:0 auto; padding:24px; }
+  header { text-align:center; padding:64px 16px 40px; }
+  h1 { font-size:2.6rem; font-weight:900; }
+  h1 .mic { color:var(--pink); }
+  .tagline { color:var(--sun); font-weight:700; margin-top:8px; font-size:1.15rem; }
+  .sub { color:#bbb; margin-top:12px; }
+  .cta { display:inline-block; margin-top:28px; background:var(--pink); color:#fff; font-weight:900;
+         font-size:1.25rem; padding:18px 48px; border-radius:999px; text-decoration:none;
+         box-shadow:0 6px 24px rgba(214,51,108,.45); transition:.2s; }
+  .cta:hover { transform:translateY(-2px); }
+  .free { font-size:.85rem; color:#bbb; margin-top:10px; }
+  section { padding:36px 0; border-top:1px solid #2c2c3a; }
+  h2 { color:var(--sun); font-size:1.5rem; margin-bottom:18px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .card { background:#232331; border-radius:16px; padding:20px; }
+  .card h3 { color:var(--pink); font-size:1.05rem; margin-bottom:8px; }
+  .card p { color:#ccc; font-size:.92rem; }
+  ol.steps li { margin:12px 0 12px 8px; }
+  code { background:#2c2c3a; padding:2px 8px; border-radius:6px; color:var(--sun); }
+  .security { background:linear-gradient(135deg,#232331,#2a1f2a); border:1px solid var(--pink);
+              border-radius:16px; padding:24px; }
+  details { background:#232331; border-radius:12px; padding:14px 18px; margin:10px 0; }
+  summary { cursor:pointer; font-weight:700; }
+  .ad-space { background:#232331; border:1px dashed #444; border-radius:12px; padding:18px;
+              text-align:center; color:#777; font-size:.85rem; margin:24px 0; }
+  footer { text-align:center; color:#888; font-size:.85rem; padding:40px 16px; border-top:1px solid #2c2c3a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <img src="patti_logo.png" alt="PATTI" style="height:110px"><h1>PATTI SCRIBE</h1>
+  <p class="tagline">無料の動画文字起こしツール ── データがネットに出ない、完全ローカルAI</p>
+  <p class="sub">映像ディレクターが、自分の現場のために作りました。</p>
+  <a class="cta" href="#DOWNLOAD_URL_HERE">⬇ 無料ダウンロード（Windows）</a>
+  <p class="free">登録不要・広告閲覧義務なし・課金要素ゼロ</p>
+</header>
+
+<section>
+  <h2>なぜ「ローカル」が最強なのか</h2>
+  <div class="security">
+    <p><strong>クラウド型の文字起こしサービスは、あなたの音声をサーバーに送ります。</strong>
+    放送前の番組素材、クライアントの社外秘、守秘義務のあるインタビュー──送っていいんでしょうか？</p>
+    <p style="margin-top:12px">PATTI SCRIBEは、AI本体をあなたのPCにダウンロードして動かします。
+    <strong style="color:var(--sun)">証拠に、Wi-Fiを切っても文字起こしできます。</strong>
+    データは1バイトも外に出ません。だから完全無料でもあります──あなたのPCが働くだけだから。</p>
+  </div>
+</section>
+
+<section>
+  <h2>できること</h2>
+  <div class="grid">
+    <div class="card"><h3>🎧 高精度文字起こし</h3><p>OpenAIのWhisper（large-v3）搭載。mp4/mov/wav/mp3ほか主要形式対応。複数ファイル一括処理も。</p></div>
+    <div class="card"><h3>🎬 テロップ用SRT出力</h3><p>タイムコード付き字幕ファイルをワンクリック生成。Premiere Pro等にそのまま読み込めます。</p></div>
+    <div class="card"><h3>🎤 話者分け</h3><p>ピンマイク別収録の対談素材を「話者1：」「話者2：」付きで書き起こし。L/Rペア収録も自動判別。</p></div>
+    <div class="card"><h3>🎞️ EDIUS対応</h3><p>QuickTitler(.etl)を全行一括生成。自作テロップをテンプレにすればデザインごと量産できます。</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>はじめかた（3ステップ）</h2>
+  <ol class="steps">
+    <li>ダウンロードしたZIPを解凍して、<code>C:\tools\patti-scribe</code> など<strong>日本語を含まない場所</strong>に置く</li>
+    <li><code>setup.bat</code> をダブルクリック（初回のみ）</li>
+    <li><code>start.bat</code> をダブルクリック → ブラウザが開いたら完了！</li>
+  </ol>
+  <p style="color:#999;font-size:.9rem">※Python未導入の場合はsetup.batが案内します ※初回のみAIモデル(約3GB)のDLがあります</p>
+</section>
+
+<div class="ad-space">Sponsored ── 映像クリエイターに届けたい広告・求人を募集予定</div>
+
+<section>
+  <h2>よくある質問</h2>
+  <details><summary>本当に無料？あとで課金されない？</summary><p>本当に無料です。AIがあなたのPC内で動くため、運営側にサーバー費用が発生しない仕組みだからです。</p></details>
+  <details><summary>Macで使える？</summary><p>現在はWindows向けです。Mac対応はご要望が多ければ検討します。</p></details>
+  <details><summary>処理は速い？</summary><p>PC性能に依存します。NVIDIA製GPU搭載機なら同梱のsetup_gpu.batで数倍〜10倍高速化できます。</p></details>
+  <details><summary>通信は本当にゼロ？</summary><p>文字起こしデータの送信はゼロです。通信は「初回のAIモデル取得」と「お知らせ・スポンサー情報の取得（小さなテキスト）」のみ。詳細はアプリ内の利用規約をご覧ください。</p></details>
+</section>
+
+<footer>
+  <p>🎙️ PATTI SCRIBE Free v1.0</p>
+  <p>© 2026 STUDIO PATTI LLC ── 合同会社スタジオパッチ（愛知県一宮市）</p>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "latest_version": "1.0",
+  "download_url": "https://ここに配布ページのURLを入れる",
+  "notice": "",
+  "ads": [
+    {
+      "text": "🎬 例：映像クリエイター向け求人はこちら（この行を書き換えると全ユーザーの画面が変わります）",
+      "url": "https://example.com",
+      "image": ""
+    }
+  ]
+}
