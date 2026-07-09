@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>開発の全記録｜PATTI SCRIBE ─ エンジニア経験ゼロの元テレビディレクターがAIとアプリを世界公開するまで</title>
+<meta name="description" content="エンジニア経験ゼロの映像ディレクターが、AI（Claude）と協働して無料文字起こしツールを開発し、GitHubで世界公開するまでの全手順をクリック単位で記録。">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --pink:#D6336C; --sun:#FFC400; --dark:#1a1a24; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Zen Maru Gothic',sans-serif; background:var(--dark); color:#eee; line-height:1.9; }
+  .wrap { max-width:820px; margin:0 auto; padding:32px 20px 60px; }
+  .back { display:inline-block; color:var(--sun); text-decoration:none; margin-bottom:24px; }
+  h1 { color:var(--pink); font-size:1.7rem; margin:28px 0 16px; line-height:1.5; }
+  h2 { color:var(--sun); font-size:1.35rem; margin:40px 0 14px; border-left:5px solid var(--pink); padding-left:12px; }
+  h3 { color:#ffb3cd; font-size:1.1rem; margin:26px 0 10px; }
+  p { margin:12px 0; }
+  ul, ol { margin:12px 0 12px 24px; }
+  li { margin:6px 0; }
+  strong { color:var(--sun); }
+  hr { border:none; border-top:1px solid #2c2c3a; margin:32px 0; }
+  table { border-collapse:collapse; width:100%; margin:16px 0; font-size:.92rem; }
+  th, td { border:1px solid #3a3a4a; padding:8px 10px; text-align:left; }
+  th { background:#2c2c3a; color:var(--sun); }
+  code { background:#2c2c3a; padding:2px 8px; border-radius:6px; color:var(--sun); font-size:.9em; }
+  pre { background:#232331; border-radius:12px; padding:16px; overflow-x:auto; margin:14px 0; }
+  pre code { background:none; padding:0; }
+  blockquote { border-left:4px solid var(--sun); padding-left:14px; color:#ccc; margin:14px 0; }
+  footer { text-align:center; color:#888; font-size:.85rem; margin-top:48px; padding-top:24px; border-top:1px solid #2c2c3a; }
+  footer a { color:var(--sun); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="index.html">← PATTI SCRIBE ダウンロードページへ戻る</a>
+<h1>PATTI SCRIBE 開発・公開の全手順</h1>
+<p><strong>〜エンジニア経験ゼロの元テレビディレクターが、AIと組んで自作アプリを世界に無料公開するまで〜</strong></p>
+<hr />
+<h2>この記録について</h2>
+<p>この文書は、映像ディレクターの池本翔（合同会社スタジオパッチ代表）が、AI（Claude）と協働して「無料の動画文字起こしツール PATTI SCRIBE」を開発し、GitHub で世界に公開するまでの<strong>全工程を、クリック単位で記録した手順書</strong>である。</p>
+<p>プログラミングの専門知識は不要だった。使ったのは「日本語で要望を伝える力」と「実際に触って不具合を報告する力」だけ。物語の骨子として、あるいは同じことに挑戦したい人の実践マニュアルとして使えるよう、事細かに残す。</p>
+<p>登場する「役割分担」を先に整理しておく。</p>
+<table>
+<thead>
+<tr>
+<th>登場人物</th>
+<th>役割</th>
+<th>たとえるなら</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>本人（池本）</strong></td>
+<td>要望を出す・実機で試す・不具合を報告する・最終判断する</td>
+<td>施主（依頼主）</td>
+</tr>
+<tr>
+<td><strong>Claude（チャット）</strong></td>
+<td>設計する・コードを書く・戦略を立てる</td>
+<td>設計士</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td>本人のPC内で実際にファイルを組み立てる</td>
+<td>現場の大工</td>
+</tr>
+<tr>
+<td><strong>GitHub</strong></td>
+<td>完成品を世界に公開する場所</td>
+<td>公共の掲示板／土地</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>第1章：AIでアプリを開発する手順</h1>
+<h2>1-1. すべての出発点は「自分が困っていたこと」</h2>
+<p>最初の動機は明快だった。<strong>テレビ番組・YouTube編集の現場で、インタビューや対談を毎回「文字起こし」する作業に膨大な時間を奪われていた。</strong> クラウドの文字起こしサービスは便利だが、月額料金がかかり、何より「放送前の素材を他社のサーバーに送る」ことへの不安が拭えなかった。</p>
+<p>→ <strong>教訓：作るべきものは「自分が心底ほしいもの」から生まれる。</strong> 市場調査より前に、自分の痛みがあった。</p>
+<h2>1-2. AIへの最初の頼み方</h2>
+<p>専門用語は一切使わなかった。伝えたのはこれだけ：</p>
+<blockquote>
+<p>「動画データや音声データから声を抽出してテキストにしたい。YouTubeのURLからも文字起こししたい。この2つを叶えるアプリを作ってほしい」</p>
+</blockquote>
+<p>ポイントは<strong>「何を実現したいか」だけを日本語で伝えた</strong>こと。「Pythonで」とか「Whisperを使って」といった指定は一切していない。手段はAIが選ぶ。人間は目的を語るだけでいい。</p>
+<h2>1-3. AIが選んだ技術（結果として）</h2>
+<p>AIが裏側で選定した構成（本人は仕組みを理解する必要はなかったが、記録として）：</p>
+<ul>
+<li><strong>文字起こしの頭脳</strong>：Whisper（OpenAIが無料公開しているAI）</li>
+<li><strong>アプリの画面</strong>：Streamlit（ブラウザに画面を作る仕組み）</li>
+<li><strong>音声の変換</strong>：ffmpeg</li>
+<li><strong>YouTube取得</strong>：yt-dlp</li>
+</ul>
+<p>これらはすべて<strong>無料・オープンソース</strong>。だから完成品も無料で配れた。</p>
+<h2>1-4. 開発の進め方（このプロジェクトの心臓部）</h2>
+<p>開発は<strong>「本人が実機で試す → 不具合を具体的に報告する → AIが直す」のループ</strong>でひたすら進んだ。これが最も重要な工程なので、実際に起きたやり取りを時系列で残す。</p>
+<h3>バージョンの進化史（実際の記録）</h3>
+<table>
+<thead>
+<tr>
+<th>Ver</th>
+<th>何を直したか</th>
+<th>きっかけとなった本人の報告</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1.0</td>
+<td>初版完成</td>
+<td>—</td>
+</tr>
+<tr>
+<td>（bat文字化け）</td>
+<td>起動ファイルの文字コード修正</td>
+<td>「ターミナルに『繝ｩ繧､繝悶Λ』みたいな文字化けが出る」</td>
+</tr>
+<tr>
+<td>v1.2</td>
+<td>冒頭の声が消える問題／速度改善</td>
+<td>「00:02-00:30の音声が一切テキスト化されてない」</td>
+</tr>
+<tr>
+<td>v1.3</td>
+<td>結果が入れ替わらないバグ修正／16ch対応</td>
+<td>「2つ目のデータを入れたのに1つ目の結果が表示されたまま」</td>
+</tr>
+<tr>
+<td>v1.5</td>
+<td>L/Rペア収録の話者を1人と正しく認識</td>
+<td>「1&amp;2chがAさん、3&amp;4chがBさんで編集してる」</td>
+</tr>
+<tr>
+<td>v1.6</td>
+<td>マルチストリーム動画の音声を全部読む</td>
+<td>「やっぱり冒頭がおかしい」</td>
+</tr>
+<tr>
+<td>v1.8</td>
+<td>冒頭の声の欠落を根絶（無音クッション）</td>
+<td>「同じ音源で、まだ00:00-00:03が拾えてない」</td>
+</tr>
+<tr>
+<td>v1.9</td>
+<td>EDIUSテロップ自動生成を追加</td>
+<td>「EDIUSに文字起こしを貼ってテロップ自動生成できる？」</td>
+</tr>
+<tr>
+<td>v1.10</td>
+<td>1行の最大文字数で自動改行</td>
+<td>「1行〇文字以上になったら改行したい」</td>
+</tr>
+<tr>
+<td>v1.11</td>
+<td>テロップのフォント化け＆クラッシュ修正</td>
+<td>「クイックタイトラーが固まって落ちた」</td>
+</tr>
+<tr>
+<td>v1.12</td>
+<td>テロップのセンター配置＋座標固定</td>
+<td>「テロップをセンターに来るようにしたい」</td>
+</tr>
+<tr>
+<td>v1.13</td>
+<td>ロゴを実アートワークに差し替え</td>
+<td>「マイクマークを添付のロゴに変えて」</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>教訓：本人の仕事は「コードを書くこと」ではなく「現場のプロとして正確に不具合を報告すること」だった。</strong> 「00:02-00:30が消えた」という具体的な報告が、AIに原因（音声チャンネルの問題）を特定させた。曖昧な「なんか変」ではなく、<strong>時間・症状・再現条件を添えた報告</strong>が開発を加速させた。</p>
+<h2>1-5. AIに実際のファイルを渡す威力</h2>
+<p>途中で本人が「みやもさん音.wav」という実際のインタビュー素材を渡した。これが決定的だった。AIはそのファイルを解剖し、「4チャンネル収録で、冒頭28秒は特定チャンネルにしか声が入っていない」ことを数値で突き止めた。</p>
+<p>→ <strong>教訓：推測で直すより、現物を渡す方が100倍速い。</strong> 困った素材があれば、それ自体をAIに渡す。</p>
+<hr />
+<h1>第2章：自分用から「公開用」にするための手順</h1>
+<h2>2-1. なぜ2つに分けたか</h2>
+<p>自分用には「YouTube文字起こし機能」があった。だが公開版では<strong>これを外す判断</strong>をした。理由：</p>
+<ul>
+<li>YouTubeの利用規約が、公式手段以外でのダウンロードを原則禁止している</li>
+<li>個人が自分の動画で使う分には問題ないが、「不特定多数に配る」となると、規約違反を助長するツールの提供元として矢面に立つリスクがある</li>
+</ul>
+<p>→ <strong>教訓：「自分が使う」と「他人に配る」は、法的にもリスク的にも別物。</strong> 公開版では機能を引き算する勇気が要る。</p>
+<h2>2-2. 3つのフォルダに整理</h2>
+<p>混乱を避けるため、最終的に用途別の3フォルダに再編成した：</p>
+<table>
+<thead>
+<tr>
+<th>フォルダ</th>
+<th>役割</th>
+<th>置き場所</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>① 自分用</strong></td>
+<td>毎日使う（YouTube機能付き）</td>
+<td><code>apps\patti-scribe</code></td>
+</tr>
+<tr>
+<td><strong>② 公開版マスター</strong></td>
+<td>公開版の原本＋運営書類（金庫）</td>
+<td><code>apps\patti-scribe-master</code></td>
+</tr>
+<tr>
+<td><strong>③ GitHub用</strong></td>
+<td>公開作業の当日セット</td>
+<td>デスクトップ（作業後は消す）</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>教訓：「日常」「保管」「作業」で物理的にフォルダを分けると、頭が混乱しない。</strong></p>
+<h2>2-3. 「ダウンロード後すぐ起動」を実現する（ポータブル版）</h2>
+<p>当初の公開版は「Pythonというソフトを別途インストールしてから」動く仕様で、一般ユーザーにはハードルが高かった。そこで<strong>Python本体ごとアプリに同梱した「ポータブル版」</strong>を作った。</p>
+<p>これは Claude Code（現場の大工）の仕事だった。本人が出した指示は実質1行：</p>
+<blockquote>
+<p>「CLAUDE_CODE_BUILD.md を読んで、その通りにポータブル版をビルドして」</p>
+</blockquote>
+<p>結果、<strong>「解凍して PattiScribe.bat をダブルクリックするだけ」</strong>で起動する232MBのzipが完成した。</p>
+<p>→ <strong>教訓：難しい製造作業は Claude Code に丸投げできる。人間は「指示書のありか」を伝えるだけ。</strong></p>
+<hr />
+<h1>第3章：GitHubアカウント作成から公開までの手順</h1>
+<blockquote>
+<p>ここが最も「クリック単位」で知りたい部分。実際の画面遷移をそのまま残す。</p>
+</blockquote>
+<h2>3-1. GitHubアカウントの作成</h2>
+<p>※本人は既にアカウント（ユーザー名 <code>ikemotodir</code>）を持っていたため、この工程は省略できた。これから作る人向けに手順を残す。</p>
+<ol>
+<li>ブラウザで <strong>https://github.com</strong> を開く</li>
+<li>右上の「<strong>Sign up</strong>」をクリック</li>
+<li>画面の指示に従い、1問ずつ入力：</li>
+<li>メールアドレス → 「Continue」</li>
+<li>パスワード（英字＋数字、7文字以上）→ 「Continue」</li>
+<li><strong>ユーザー名</strong> → 「Continue」（★後からURLに一生使われるので慎重に。会社の顔になる名前を）</li>
+<li>アンケート（適当でOK・後で変更可）</li>
+<li>本人確認パズル（画像の向きを合わせる等）</li>
+<li>「<strong>Create account</strong>」をクリック</li>
+<li>登録メールに届いた<strong>認証コード</strong>を入力</li>
+<li>プラン選択で「<strong>Free（無料）</strong>」を選ぶ</li>
+</ol>
+<p>→ <strong>ポイント：ユーザー名は変更可能だが、変えると配布URLが全部変わってしまう。最初に決め切る。SNSと統一されているならそのまま活かすのが賢い。</strong></p>
+<h2>3-2. リポジトリ（置き場）を作る</h2>
+<ol>
+<li>右上の「<strong>＋</strong>」→「<strong>New repository</strong>」をクリック</li>
+<li><strong>Repository name</strong> に <code>patti-scribe</code> と入力</li>
+<li><strong>Public</strong>（公開）を選択 ← 無料公開の必須条件</li>
+<li>下の「Add README」「Add .gitignore」「Add license」は<strong>すべて触らずデフォルトのまま</strong>（初回は全部スルーが正解）</li>
+<li>緑の「<strong>Create repository</strong>」をクリック</li>
+</ol>
+<h2>3-3. 配布ページの材料をアップロード</h2>
+<ol>
+<li>作成直後のリポジトリ画面で、青枠内の「<strong>uploading an existing file</strong>」をクリック
+   （※下に並ぶ <code>git init</code> などのコマンドは全部無視でOK）</li>
+<li>パソコンで「GitHub用フォルダ」の中の3ファイルを選択：</li>
+<li><code>config.json</code>（広告・更新通知のリモコン設定）</li>
+<li><code>index.html</code>（配布ページ本体）</li>
+<li><code>patti_logo.png</code>（ロゴ画像）</li>
+<li><strong>3ファイルだけ</strong>をドロップエリアにドラッグ（★フォルダごとではなく中身3つ）</li>
+<li>下の緑の「<strong>Commit changes</strong>」をクリック</li>
+</ol>
+<h2>3-4. 配布ページを世界に公開（GitHub Pages）</h2>
+<ol>
+<li>上部メニューの「<strong>Settings</strong>」をクリック</li>
+<li>左サイドバーの「<strong>Pages</strong>」をクリック</li>
+<li>「Branch」の欄を「<strong>main</strong>」に設定 →「<strong>Save</strong>」</li>
+<li>画面上部に「GitHub Pages source saved.」と青い帯が出れば設定完了</li>
+<li><strong>1〜3分待って</strong> F5（再読み込み）すると、「Your site is live at https://ikemotodir.github.io/patti-scribe/」と表示される</li>
+<li>これが<strong>配布ページのURL</strong>（永久無料・誰でも閲覧可・24時間表示）</li>
+</ol>
+<p>→ <strong>ポイント：ドメイン料もサーバー代も一切かからない。GitHubの「間借り住所」を無料で使える。BASEやCanvaでサイトが作れるのと同じ仕組み。</strong></p>
+<h2>3-5. アプリ本体（zip）をアップロード（Releases）</h2>
+<ol>
+<li>リポジトリのトップに戻り、右側サイドバーの「<strong>Releases</strong>」をクリック
+   （または URL欄に直接 <code>github.com/ikemotodir/patti-scribe/releases/new</code> を打つ）</li>
+<li>「<strong>Create a new release</strong>」をクリック</li>
+<li>「<strong>Choose a tag</strong>」→ <code>v1.0</code> と入力 →「Create new tag: v1.0」を選択</li>
+<li><strong>Release title</strong> に <code>PATTI SCRIBE v1.0</code> と入力</li>
+<li>説明欄に、あらかじめ用意した紹介文（日本語）を貼り付け</li>
+<li>「<strong>Attach binaries by dropping them here...</strong>」エリアに <code>PATTI_SCRIBE_portable.zip</code>（232MB）をドラッグ</li>
+<li><strong>アップロードのバーが100%になり、ファイル名が表示されるまで待つ</strong>（数分。途中でページを閉じない）</li>
+<li>緑の「<strong>Publish release</strong>」をクリック</li>
+</ol>
+<p>→ これで世界中の誰でもダウンロードできる状態になった。</p>
+<h2>3-6. ダウンロードボタンを繋ぐ（最後の配線）</h2>
+<p>配布ページのダウンロードボタンを、上げたzipに繋ぐ。</p>
+<p><strong>① zipのURLを取得</strong>
+1. Releaseページで <code>PATTI_SCRIBE_portable.zip</code> のリンクを<strong>右クリック</strong>
+2. 「<strong>リンクのアドレスをコピー</strong>」を選択
+   → <code>https://github.com/ikemotodir/patti-scribe/releases/download/v1.0/PATTI_SCRIBE_portable.zip</code></p>
+<p><strong>② config.json に貼る</strong>
+1. リポジトリトップ →「config.json」をクリック → 右上の<strong>鉛筆マーク（✏️）</strong>
+2. <code>"download_url": "..."</code> の <code>...</code> 部分をコピーしたURLに書き換え（★ダブルクォート <code>"</code> の中身だけ）
+3. 「Commit changes」</p>
+<p><strong>③ index.html に貼る</strong>
+1. リポジトリトップ →「index.html」をクリック → 鉛筆マーク
+2. <strong>Ctrl+F</strong> で <code>#DOWNLOAD_URL_HERE</code> を探し、同じURLに書き換え
+3. 「Commit changes」</p>
+<p>→ これで配布ページの緑のダウンロードボタンが機能する。<strong>公開完了。</strong></p>
+<hr />
+<h1>第4章：各ポイントでバグがあった時の手順</h1>
+<p>このプロジェクトの本質は「一度で完璧を目指さず、出してから直す」だった。実際に起きたバグと、その対処フローを残す。</p>
+<h2>4-1. バグ報告の黄金パターン</h2>
+<p>本人が実践した、AIに最速で直させる報告の型：</p>
+<ol>
+<li><strong>どの画面で起きたか</strong>（例：「クイックタイトラーを起動したら」）</li>
+<li><strong>何が起きたか</strong>（例：「フォントがAGA Arabesqueに化けて、固まって落ちた」）</li>
+<li><strong>可能ならスクリーンショット</strong>（エラー文が写っていれば原因特定が一気に進む）</li>
+<li><strong>再現条件</strong>（例：「2つ目のファイルに入れ替えたら」）</li>
+</ol>
+<p>→ この4点セットがあれば、AIは推測ではなく<strong>原因を論理的に特定</strong>できた。</p>
+<h2>4-2. 代表的なバグと対処の実例</h2>
+<h3>例1：文字化け（起動ファイルが動かない）</h3>
+<ul>
+<li><strong>症状</strong>：ターミナルに「繝ｩ繧､繝悶Λ」のような文字化け、コマンドが認識されない</li>
+<li><strong>原因</strong>：WindowsのターミナルとファイルのUTF-8/Shift-JISのすれ違い</li>
+<li><strong>対処</strong>：AIがShift-JIS形式でファイルを作り直し → 差し替え</li>
+</ul>
+<h3>例2：冒頭の声が消える</h3>
+<ul>
+<li><strong>症状</strong>：「00:02-00:30の音声がテキスト化されない」「7-20秒の声が冒頭に化ける」</li>
+<li><strong>原因</strong>：①音声チャンネルの音量問題 ②AIの冒頭処理の癖 ③マルチトラック動画の一部しか読んでいなかった</li>
+<li><strong>対処</strong>：音量の自動正規化＋冒頭に無音クッション＋全トラック統合 を段階的に実装。<strong>実ファイルを渡したことで数値解析による原因特定ができた</strong></li>
+</ul>
+<h3>例3：テロップソフトがクラッシュ</h3>
+<ul>
+<li><strong>症状</strong>：生成したテロップをEDIUSで開くと固まって落ちる</li>
+<li><strong>原因</strong>：改行の文字数カウントがソフトの内部帳簿とズレていた</li>
+<li><strong>対処</strong>：本人が「1行版」「2行版」の実ファイルを2枚渡す → AIが両者を比較解析し、正しい仕様を逆算</li>
+</ul>
+<h3>例4：公開後の実機テストで発覚した5連バグ</h3>
+<p>公開直後、本人が「自分が最初のユーザー」として通しで使い、5つの不具合を発見：
+1. ダウンロード後に何をすればいいか分からない → READMEへの案内を追加
+2. READMEが開けない → メモ帳で開ける.txt形式に変更
+3. ショートカット作成が文字化けエラー → 正しい文字コードで作り直し
+4. 文字起こしでcublasエラー → GPU「点火テスト」でCPUへ確実に切替
+5. 黒い画面が怖い＆残る → 起動時に自動最小化</p>
+<p>→ <strong>教訓：これは「ドッグフーディング」（自社製品を自分で使う品質検査）という正式な手法。公開当日にやったから、実ユーザーが被害に遭う前に直せた。</strong></p>
+<h2>4-3. バグ修正版の配り直し手順</h2>
+<p>修正版zipを作った後、GitHub上で差し替える手順（URLを変えずに中身だけ更新）：</p>
+<p><strong>① Releaseのzip差し替え</strong>
+1. Releaseページ（v1.0）→ 右上の<strong>鉛筆マーク（Edit）</strong>
+2. Assets欄の古いzipの右の<strong>ゴミ箱アイコン</strong>をクリック（「will be deleted」と赤字が出る＝削除予約）
+3. 新しいzip（同じファイル名）をドラッグ → アップロード100%待ち
+4. 緑の「<strong>Update release</strong>」をクリック
+   → <strong>同名だからダウンロードURLが変わらない＝config.jsonの再編集が不要</strong></p>
+<p><strong>② index.htmlの差し替え</strong>
+1. リポジトリトップ →「<strong>Add file</strong>」→「<strong>Upload files</strong>」
+2. 新しい index.html をドラッグ（同名なので自動上書き）
+3. 「<strong>Commit changes</strong>」
+4. 1〜3分待って Ctrl+F5 でページ更新を確認</p>
+<p>→ <strong>ポイント：ファイル名を同じにしておくと、差し替えても配線を直す必要がない。この設計が後の運営を劇的に楽にした。</strong></p>
+<hr />
+<h1>第5章：Claude Code との連携手順</h1>
+<h2>5-1. Claude とは何が違うのか</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Claude（チャット）</th>
+<th>Claude Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>役割</td>
+<td>設計・戦略・コード執筆</td>
+<td>本人のPC内で実際にファイルを組み立てる</td>
+</tr>
+<tr>
+<td>たとえ</td>
+<td>設計士</td>
+<td>現場の大工</td>
+</tr>
+<tr>
+<td>得意なこと</td>
+<td>考える・書く・判断する</td>
+<td>Python同梱・ffmpeg同梱など「重い製造」</td>
+</tr>
+</tbody>
+</table>
+<h2>5-2. 連携の基本フロー</h2>
+<ol>
+<li><strong>Claude（チャット）</strong>が指示書（<code>〇〇.md</code>）を作成する</li>
+<li>本人がその指示書を、自分のPCの <code>apps</code> フォルダ内に配置する</li>
+<li>本人が <strong>Claude Code</strong> を起動し、<strong>指示書のありかを1行で伝える</strong>だけ</li>
+<li>Claude Code が指示書を読み、自走してファイルを組み立てる</li>
+<li>完了報告（MORNING.md やログ）を、本人が Claude（チャット）に貼って<strong>検品してもらう</strong></li>
+</ol>
+<h2>5-3. 実際に使った指示文の例</h2>
+<p><strong>ポータブル版のビルド時：</strong></p>
+<pre><code>C:\Users\studi\Desktop\Claude\apps\patti-scribe-master\CLAUDE_CODE_BUILD.md
+を読んで、その通りにポータブル版（Python同梱・ダブルクリック起動）を
+ビルドして。完成したら結果をMORNING.mdに書いて。
+</code></pre>
+<p><strong>バグ修正（hotfix）時：</strong></p>
+<pre><code>patti-scribe-master\hotfix\CLAUDE_CODE_HOTFIX.md を読んで、
+その通りに実行して。files内の3ファイルは編集禁止・バイナリコピーのみ。
+完了したらMORNING.mdに結果を書いて。
+</code></pre>
+<h2>5-4. Claude Code に頼む時の注意点（実体験から）</h2>
+<ul>
+<li><strong>ファイルは「渡す」のではなく「置く」</strong>。Claude Code は本人のPC内のファイルを直接読めるので、正しいフォルダに置いてパス（住所）を伝えるだけでいい</li>
+<li><strong>フルパスで指定する</strong>（どのフォルダで起動していても迷わない）</li>
+<li><strong>文字コードが繊細なファイル（bat等）は「編集禁止・そのままコピー」を明示</strong>。過去に、気を利かせた編集で文字コードが壊れた事故があった</li>
+<li><strong>完了報告は必ず Claude（チャット）に貼って検品させる</strong>。「修正した」「編集した」という言葉が混ざっていたら要注意のサイン</li>
+</ul>
+<h2>5-5. Claude Code が見せた賢さ（記録として）</h2>
+<p>ビルド中、Windowsの「パスが長すぎる」制限にぶつかった際、Claude Code は自力で「短いパスのフォルダで作業し直す」という回避策を実行した。また、セキュリティソフト（Avast）が通信を妨害した際は、既にPCにあったキャッシュを使ってテストを完遂した。</p>
+<p>→ <strong>教訓：現場で予期せぬ問題が起きても、Claude Code はある程度自力で解決する。ただし最終判断と検品は人間（と設計士Claude）が担う。</strong></p>
+<hr />
+<h1>総括：この物語が示したこと</h1>
+<p>エンジニア経験ゼロの映像ディレクターが、以下をやり遂げた：</p>
+<ol>
+<li><strong>自分の困りごとを起点に、AIと日本語の対話だけでアプリを開発した</strong></li>
+<li><strong>実機で試して具体的に報告する、という「プロの目」で品質を上げた</strong></li>
+<li><strong>自分用と公開用を戦略的に分け、機能を引き算する判断をした</strong></li>
+<li><strong>GitHubで世界に無料公開した（ドメイン料ゼロ）</strong></li>
+<li><strong>公開後も、config.json 1個の編集で運営できる仕組みを持った</strong></li>
+</ol>
+<p>プログラミングは書いていない。書いたのは<strong>「要望」と「不具合報告」と「判断」</strong>だけ。</p>
+<p>これは特別な才能の話ではなく、<strong>「作りたいものが明確にあり」「実際に手を動かして試し」「AIに正確に伝える」</strong> ことができれば、誰にでも再現できる時代の証明である。</p>
+<hr />
+<h2>付録：使ったツールと料金</h2>
+<table>
+<thead>
+<tr>
+<th>ツール</th>
+<th>役割</th>
+<th>料金</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude（チャット）</td>
+<td>設計・コード執筆</td>
+<td>有料プラン</td>
+</tr>
+<tr>
+<td>Claude Code</td>
+<td>PC内での製造</td>
+<td>有料プラン</td>
+</tr>
+<tr>
+<td>GitHub</td>
+<td>公開・配布</td>
+<td><strong>無料</strong></td>
+</tr>
+<tr>
+<td>GitHub Pages</td>
+<td>配布ページのホスティング</td>
+<td><strong>無料</strong></td>
+</tr>
+<tr>
+<td>Whisper / ffmpeg / Streamlit 等</td>
+<td>アプリの部品</td>
+<td><strong>無料</strong>（オープンソース）</td>
+</tr>
+<tr>
+<td>配布したツール（PATTI SCRIBE）</td>
+<td>ユーザーの利用</td>
+<td><strong>無料</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>🎙️ <strong>PATTI SCRIBE</strong> ── 制作：合同会社スタジオパッチ（愛知県一宮市）
+© 2026 STUDIO PATTI LLC
+配布ページ：https://ikemotodir.github.io/patti-scribe/</p>
+<footer>
+  <p><a href="index.html">🎙️ PATTI SCRIBE を無料ダウンロード</a></p>
+  <p>© 2026 STUDIO PATTI LLC ── 合同会社スタジオパッチ（愛知県一宮市）</p>
+</footer>
+</div>
+</body>
+</html>
