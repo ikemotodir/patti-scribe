@@ -5,37 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PATTI SCRIBE｜無料の動画文字起こしツール（完全ローカル・データが漏れない）</title>
 <meta name="description" content="動画・音声をドラッグ&ドロップするだけでAIが高精度文字起こし。完全無料・完全ローカル動作でデータがネットに出ないから、放送前素材や社外秘の会議もOK。テロップ用SRT・話者分け・EDIUS対応。">
+<meta name="theme-color" content="#1a1a24">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PATTI SCRIBE｜無料の動画文字起こしツール">
+<meta property="og:description" content="ドラッグするだけでAIが文字起こし。完全ローカルでデータがネットに出ない。SRT字幕・話者分け・EDIUS対応。">
+<meta property="og:url" content="https://ikemotodir.github.io/patti-scribe/">
+<meta property="og:image" content="https://ikemotodir.github.io/patti-scribe/patti_logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="patti_logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root { --pink:#D6336C; --sun:#FFC400; --dark:#1a1a24; }
+  :root {
+    --pink: #D6336C; --yellow: #FFC400; --bg: #1a1a24; --card: #232331;
+    --border: #2c2c3a; --text: #ffffff; --text-sub: #cccccc; --text-dim: #bbbbbb;
+  }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Zen Maru Gothic',sans-serif; background:var(--dark); color:#fff; line-height:1.8; }
-  .wrap { max-width:860px; margin:0 auto; padding:24px; }
-  header { text-align:center; padding:64px 16px 40px; }
+  body { background:var(--bg); color:var(--text); font-family:'Zen Maru Gothic',sans-serif; font-weight:500; line-height:1.8; }
+  .wrap { max-width:860px; margin:0 auto; padding:0 20px; }
+  .back { display:inline-block; margin-top:18px; color:var(--text-dim); text-decoration:none; font-size:.9rem; }
+  .back:hover { color:var(--yellow); }
+  header { text-align:center; padding:48px 16px 40px; }
   h1 { font-size:2.6rem; font-weight:900; }
-  h1 .mic { color:var(--pink); }
-  .tagline { color:var(--sun); font-weight:700; margin-top:8px; font-size:1.15rem; }
-  .sub { color:#bbb; margin-top:12px; }
-  .cta { display:inline-block; margin-top:28px; background:var(--pink); color:#fff; font-weight:900;
-         font-size:1.25rem; padding:18px 48px; border-radius:999px; text-decoration:none;
+  .accent { color:var(--yellow); }
+  h1 .accent { color:var(--pink); }
+  .tagline { color:var(--yellow); font-weight:700; margin-top:8px; font-size:1.15rem; }
+  .sub { color:var(--text-dim); margin-top:12px; }
+  .btn { display:inline-block; background:var(--pink); color:#fff; font-weight:900;
+         padding:14px 40px; border-radius:999px; text-decoration:none;
          box-shadow:0 6px 24px rgba(214,51,108,.45); transition:.2s; }
-  .cta:hover { transform:translateY(-2px); }
-  .free { font-size:.85rem; color:#bbb; margin-top:10px; }
-  section { padding:36px 0; border-top:1px solid #2c2c3a; }
-  h2 { color:var(--sun); font-size:1.5rem; margin-bottom:18px; }
+  .btn:hover { transform:translateY(-2px); }
+  .btn.big { margin-top:28px; font-size:1.25rem; padding:18px 48px; }
+  .free { font-size:.85rem; color:var(--text-dim); margin-top:10px; }
+  section { padding:36px 0; border-top:1px solid var(--border); }
+  h2 { text-align:center; font-weight:900; font-size:1.5rem; margin-bottom:18px; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
-  .card { background:#232331; border-radius:16px; padding:20px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; }
   .card h3 { color:var(--pink); font-size:1.05rem; margin-bottom:8px; }
-  .card p { color:#ccc; font-size:.92rem; }
+  .card p { color:var(--text-sub); font-size:.92rem; }
   ol.steps li { margin:12px 0 12px 8px; }
-  code { background:#2c2c3a; padding:2px 8px; border-radius:6px; color:var(--sun); }
+  code { background:var(--border); padding:2px 8px; border-radius:6px; color:var(--yellow); }
   .security { background:linear-gradient(135deg,#232331,#2a1f2a); border:1px solid var(--pink);
               border-radius:16px; padding:24px; }
-  details { background:#232331; border-radius:12px; padding:14px 18px; margin:10px 0; }
-  summary { cursor:pointer; font-weight:700; }
-  .ad-space { background:#232331; border:1px dashed #444; border-radius:12px; padding:18px;
-              text-align:center; color:#777; font-size:.85rem; margin:24px 0; }
-  footer { text-align:center; color:#888; font-size:.85rem; padding:40px 16px; border-top:1px solid #2c2c3a; }
+  details { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin:10px 0; }
+  summary { cursor:pointer; font-weight:700; list-style:none; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:'＋'; color:var(--pink); font-weight:900; margin-right:8px; }
+  details[open] summary::before { content:'−'; }
+  .sponsor-box { background:linear-gradient(135deg,rgba(214,51,108,.12),rgba(255,196,0,.08)); border:1px dashed var(--pink); border-radius:16px; padding:28px 24px; text-align:center; }
+  .sponsor-box h3 { font-weight:900; font-size:1.2rem; }
+  .sponsor-box p { color:var(--text-sub); font-size:.92rem; max-width:560px; margin:10px auto 18px; }
+  footer { text-align:center; color:var(--text-dim); font-size:.85rem; padding:40px 16px; border-top:1px solid var(--border); }
 </style>
 <!-- Google Analytics (GA4) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-C9RFZES8ZS"></script>
@@ -48,14 +67,15 @@
 </head>
 <body>
 <div class="wrap">
+<a class="back" href="https://ikemotodir.github.io/">← PATTIツールの棚にもどる</a>
 <header>
-  <img src="patti_logo.png" alt="PATTI" style="height:110px"><h1>PATTI SCRIBE</h1>
+  <img src="patti_logo.png" alt="PATTI" style="height:110px"><h1>PATTI <span class="accent">SCRIBE</span></h1>
   <p class="tagline">無料の動画文字起こしツール ── データがネットに出ない、完全ローカルAI</p>
-  <p class="sub">エンジニア経験0の番組ディレクターが、AIと一緒に創りました。
-  <a href="story.html" style="color:#FFC400">→ 開発の全記録はこちら</a></p>
-  <a class="cta" href="https://github.com/ikemotodir/patti-scribe/releases/download/v1.2/PATTI_SCRIBE_portable.zip" onclick="gtag('event','download_click',{event_category:'engagement',event_label:'portable_zip'});">⬇ 無料ダウンロード（Windows）</a>
+  <p class="sub">エンジニア経験０の番組ディレクターが、AIと一緒に創りました。
+  <a href="story.html" style="color:var(--yellow)">→ 開発の全記録はこちら</a></p>
+  <a class="btn big" href="https://github.com/ikemotodir/patti-scribe/releases/latest/download/PATTI_SCRIBE_portable.zip" onclick="gtag('event','download',{app:'patti-scribe'});">⬇ 無料ダウンロード（Windows）</a>
   <p class="free">登録不要・広告閲覧義務なし・課金要素ゼロ</p>
-  <p class="free">📖 ダウンロード後は、まずフォルダ内の <strong style="color:#FFC400">README.txt</strong> をお読みください</p>
+  <p class="free">📖 ダウンロード後は、まずフォルダ内の <strong style="color:var(--yellow)">README.txt</strong> をお読みください</p>
 </header>
 
 <section style="border-top:none;padding-top:8px">
@@ -66,12 +86,12 @@
 </section>
 
 <section>
-  <h2>なぜ「ローカル」が最強なのか</h2>
+  <h2>なぜ「<span class="accent">ローカル</span>」が最強なのか</h2>
   <div class="security">
     <p><strong>クラウド型の文字起こしサービスは、あなたの音声をサーバーに送ります。</strong>
     放送前の番組素材、クライアントの社外秘、守秘義務のあるインタビュー──送っていいんでしょうか？</p>
     <p style="margin-top:12px">PATTI SCRIBEは、AI本体をあなたのPCにダウンロードして動かします。
-    <strong style="color:var(--sun)">証拠に、Wi-Fiを切っても文字起こしできます。</strong>
+    <strong style="color:var(--yellow)">証拠に、Wi-Fiを切っても文字起こしできます。</strong>
     データは1バイトも外に出ません。だから完全無料でもあります──あなたのPCが働くだけだから。</p>
   </div>
 </section>
@@ -98,16 +118,25 @@
 
 <section>
   <h2>アップデート方法</h2>
-  <p style="color:#ccc">新しいバージョンが公開されると、<strong style="color:var(--sun)">アプリ起動時に画面上部で自動的にお知らせ</strong>します。更新はカンタンです：</p>
+  <p style="color:var(--text-sub)">新しいバージョンが出ると、<strong style="color:var(--yellow)">アプリ起動時に更新バナーでお知らせ</strong>します。勝手にファイルを書き換える自動アップデートではありません（通知＋手動更新の安全設計）。更新は3ステップ：</p>
   <ol class="steps">
-    <li>お知らせの「ダウンロードページへ」から最新ZIPをダウンロード</li>
+    <li>バナーの「ダウンロードページへ」から最新ZIPをダウンロード</li>
     <li><strong style="color:var(--pink)">今まで使っていたフォルダに、そのまま上書き展開</strong>（同じ場所に置き換える）</li>
-    <li>これだけ。<strong style="color:var(--sun)">デスクトップのショートカットは、そのまま最新版が開きます</strong></li>
+    <li>完了。<strong style="color:var(--yellow)">デスクトップのショートカットはそのまま最新版が開きます</strong></li>
   </ol>
-  <p style="color:#999;font-size:.9rem">※別の場所に展開すると古い版が残るので、<strong>同じフォルダに上書き</strong>がおすすめです。 ※ショートカットを作り直したいときは、フォルダ内の <code>create_shortcut.bat</code> をダブルクリック。 ※文字起こし用のAIモデルは再ダウンロード不要（そのまま使えます）。</p>
+  <p style="color:#999;font-size:.9rem">※別の場所に展開すると古い版が残るため、<strong>同じフォルダに上書き</strong>がおすすめ。 ※AIモデルの再ダウンロードは不要。 ※ショートカットの作り直しは <code>create_shortcut.bat</code> をダブルクリック。</p>
 </section>
 
-<div class="ad-space">Sponsored ── 映像クリエイターに届けたい広告・求人を募集予定</div>
+<!-- スポンサー枠 流用元: PATTI CREATIVE PRODUCT トップ(#sponsor-box)。棚側の仕様変更時に追従 -->
+<section>
+  <h2>📣 <span class="accent">SPONSOR</span> 📣</h2>
+  <div class="sponsor-box">
+    <h3>法人から個人まで、誰でもスポンサーに</h3>
+    <p>PATTI CREATIVE PRODUCT は、クリエイターが多く集まるサイトです。広告のご相談は直接どうぞ。仲介なし、話が早いのが自慢です。</p>
+    <a class="btn" href="https://ikemotodir.github.io/contact.html"
+       onclick="gtag('event','sponsor_contact_click',{from:'patti-scribe'})">広告掲載の相談をする</a>
+  </div>
+</section>
 
 <section>
   <h2>よくある質問</h2>
@@ -118,21 +147,31 @@
 </section>
 
 <section>
-  <p style="color:#999;font-size:.88rem">
-    ※本アプリの利用によって生じたいかなる損害・トラブルについても、
-    当社（STUDIO PATTI LLC）は一切の責任を負いません。自己責任でご利用ください。
-    詳しい利用条件はアプリ内「📜 このアプリについて」タブをご覧ください。
-  </p>
-  <p style="color:#777;font-size:.8rem;margin-top:8px">
-    ※本サイトはアクセス解析（Googleアナリティクス）を利用しています。
-    アプリ本体の動作とは無関係で、あなたの音声・動画データが送信されることはありません。
-  </p>
+  <div class="card" style="color:#999;font-size:.88rem">
+    <p>※本アプリの利用によって生じたいかなる損害・トラブルについても、
+    当社（STUDIO PATTI LLC）は一切の責任を負いません。自己責任でご利用ください。</p>
+    <p>※権利を持たない動画・音声の変換（文字起こし）や、その成果物の再配布はおやめください。</p>
+    <p>※お使いの環境によっては動作しない場合があります。</p>
+    <p>※詳しい利用条件はアプリ内「📜 このアプリについて」タブをご覧ください。</p>
+    <p style="color:#777;font-size:.9em;margin-top:8px">
+      ※本サイトはアクセス解析（Googleアナリティクス）を利用しています。
+      アプリ本体の動作とは無関係で、あなたの音声・動画データが送信されることはありません。
+    </p>
+  </div>
 </section>
 
 <footer>
-  <p>🎙️ PATTI SCRIBE Free v1.2</p>
-  <p>© 2026 STUDIO PATTI LLC ── 合同会社スタジオパッチ（愛知県一宮市）</p>
+  <p>🎙️ PATTI SCRIBE Free<span id="scribeVer"></span></p>
+  <p>© 2026 STUDIO PATTI LLC｜合同会社スタジオパッチ</p>
+  <p><a href="https://ikemotodir.github.io/" style="color:var(--yellow)">← PATTI CREATIVE PRODUCT トップへ</a></p>
 </footer>
 </div>
+<script>
+  // バージョンは GitHub Releases API から自動取得（手書き禁止・リリースだけでページ更新不要）
+  fetch('https://api.github.com/repos/ikemotodir/patti-scribe/releases/latest')
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if (d && d.tag_name) document.getElementById('scribeVer').textContent = ' ' + d.tag_name; })
+    .catch(function(){});
+</script>
 </body>
 </html>
